@@ -1,0 +1,71 @@
+elemDistintos:
+	# $t0: $a0 (endereço base do vetor) 
+    # $t1: $a1 (quantidade de elementos do vetor)
+    # $t2: i
+    # $t3: j
+    # $t4: numIguais
+    # $t5: numDistintos
+    # $t6: comparador
+    # $t7: -1
+    # $t8: v[i]
+    # $t9: j[i]
+        # 2 - Executa o procedimento
+
+        #inicializar t0 com endereço base
+
+        move $t0, $a0
+        #inicializar t1 com quantidade de elementos
+        move $t1, $a1
+        #inicializar i com 1
+        addi $t2, $zero, 1
+        #inicializar numDistintos com 1
+        addi $t5, $zero, 1
+        #inicializar t7 com -1
+        addi $t7, $zero, -1
+Loop1:
+        #i < quantidade de elementos?
+        slt $t6, $t2, $t1
+        beq $t6, $zero, Exit
+        #armazenar em j (i-1)
+        addi $t3, $t2, -1
+        #inicializar numIguais com 0
+        add $t4, $zero, $zero
+Loop2:  
+        #j > -1? (t3 > t7)
+        slt $t6, $t7, $t3
+        beq $t6, $zero, If2
+        #atribuir v[i] e v[j] (condição do if)
+        ##v[i]:
+        #sll $t8, $t2, 2
+        #dd $t8, $t8, $t0
+        #lw $t8, 0($t8)
+        ##v[j]:
+        #sll $t9, $t3, 2
+        #add $t9, $t9, $t0
+        #lw $t9, 0($t9)
+        #decrementar j (j--)
+        addi $t3, $t3, -1
+        j If1
+If1:    
+        #se v[i] == v[j] 
+        bne $t8, $t9, Loop2 
+        #numIguais++ 
+
+        move $t9, $zero
+        addi $t8, $t8, 1
+
+        addi $t4, $t4, 1
+        j Loop2        
+If2:   
+        #adicionar i (i++)
+        addi $t2, $t2, 1
+        #se (numIguais == 0)
+        bne $t4, $zero, Loop1
+        #numDistintos++
+        addi $t5, $t5, 1
+        j Loop1
+Exit:   
+        #Salvar o resultado no registrador de retorno
+        move $v0, $t5 
+        #Retornar ao caller
+        jr $ra
